@@ -2,11 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './admin/admin.module';
-import { AuthModule } from './auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { StatuslistModule } from './statuslist/statuslist.module';
+import { UserModule } from './user/user.module';
 import { CommentlistModule } from './commentlist/commentlist.module';
-
+import { StatuslistModule } from './statuslist/statuslist.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -22,9 +21,9 @@ import { CommentlistModule } from './commentlist/commentlist.module';
       logging: true
     }),
     AdminModule,
-    AuthModule,
-    StatuslistModule,
+    UserModule,
     CommentlistModule,
+    StatuslistModule
   ],
   controllers: [AppController],
   providers: [AppService],

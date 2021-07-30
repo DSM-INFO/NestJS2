@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, CreateDateColumn } from "typeorm";
 
 @Entity()
-export class Auth {
-    @PrimaryGeneratedColumn()
+export class User {
+    @PrimaryGeneratedColumn('uuid')
     uid: string;
 
     @Column()
@@ -14,12 +14,12 @@ export class Auth {
     @Column()
     grade: number;
 
-    @Column()
+    @Column({ nullable: true })
     status: number;
 
     @Column()
     password: string;
 
-    @Column()
+    @CreateDateColumn()
     date: Date;
 }
