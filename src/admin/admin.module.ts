@@ -3,10 +3,18 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { AdminController } from './admin.controller';
 import { AdminService } from './admin.service';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './constants';
 
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Admin])],
+  imports: [
+    TypeOrmModule.forFeature([Admin]),
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '10m' },
+    }),
+  ],
   controllers: [AdminController],
   providers: [AdminService]
 })

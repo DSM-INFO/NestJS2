@@ -12,7 +12,7 @@ import { UserService } from './user.service';
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '5m' },
-    })
+    }),
   ],
   controllers: [UserController],
   providers: [UserService]

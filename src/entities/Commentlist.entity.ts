@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class CommentList {
@@ -11,6 +11,6 @@ export class CommentList {
     @Column()
     content: string;
 
-    @Column()
+    @CreateDateColumn()
     date: Date;
 }
