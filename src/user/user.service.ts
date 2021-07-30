@@ -40,7 +40,6 @@ export class UserService {
             throw new UnauthorizedException()
         }
         const user = await this.UserRepository.findOne({ id: data.id });
-        console.log(user);
         if (!user) {
             this.logger.log('user is Not Found!');
             throw new NotFoundException();
@@ -59,4 +58,46 @@ export class UserService {
             "access_token": jwt
         };
     };
+
+    async updateUser(id: string, data: User) {
+        const user = await this.UserRepository.findOne({ where: { id } });
+        if (!user) {
+            this.logger.log('id is Not Found!');
+            throw new BadRequestException();
+        }
+        if (!data.id || !data.name || !data.grade) {
+            this.logger.log('id & name & grade is Not Found!');
+        }
+        await this.UserRepository.update(
+            {
+                id: id
+            },
+            {
+                id: data.id,
+                name: data.name,
+                grade: data.grade
+            },
+        );
+        return {
+            'status': 200
+        };
+    };
+
+    //보류
+    /*
+    async updateStatus(data: any) {
+        if (!data) {
+            this.logger.log('data is Not Found!');
+            throw new BadRequestException();
+        }
+        await this.UserRepository.update(
+            {
+                
+            },
+            {
+
+            }
+            );
+    }
+    */
 }

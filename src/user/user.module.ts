@@ -1,3 +1,4 @@
+import { PassportModule } from '@nestjs/passport';
 import { jwtConstants } from './constants';
 import { JwtModule } from '@nestjs/jwt';
 import { User } from './../entities/user.entity';
@@ -9,12 +10,14 @@ import { UserService } from './user.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
+    PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '5m' },
     }),
   ],
   controllers: [UserController],
-  providers: [UserService]
+  providers: [UserService],
+  exports: [UserService]
 })
 export class UserModule { }

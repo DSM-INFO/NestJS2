@@ -1,6 +1,6 @@
 import { User } from './../entities/user.entity';
 import { UserService } from './user.service';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Patch, Post, Param, UseGuards, Request } from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
@@ -15,6 +15,18 @@ export class UserController {
 
     @Post('login')
     async login(@Body() data) {
-        return await this.UserService.login(data);
+        return this.UserService.login(data);
     }
+
+    @Patch('update/:id')
+    async updateUser(@Param('id') id: string, @Body() data: User) {
+        return await this.UserService.updateUser(id, data);
+    }
+
+    /*
+    @Patch('status')
+    async updateStatus(@Body() data: any) {
+        return await this.UserService.updateStatus(data);
+    }
+    */
 }

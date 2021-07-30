@@ -5,11 +5,14 @@ export class Admin {
     @PrimaryGeneratedColumn('uuid')
     num: number;
 
-    @Column({unique: true})
+    @Column({ unique: true })
     ID: string;
 
     @Column()
     password: string;
+
+    @Column({ default: true })
+    isAdmin: boolean;
 
     @CreateDateColumn()
     date: Date;

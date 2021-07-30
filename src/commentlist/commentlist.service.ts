@@ -1,5 +1,5 @@
 import { CommentList } from './../entities/commentlist.entity';
-import { Injectable, Logger, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, NotFoundException, UnauthorizedException, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { timeStamp } from 'console';
@@ -10,6 +10,23 @@ export class CommentlistService {
         @InjectRepository(CommentList) private CommentListRepository: Repository<CommentList>,
     ) { }
     private logger = new Logger();
+
+    async getlist(num: number) {
+        const post = await this.CommentListRepository.findOne(num);
+        if (!post) {
+            this.logger.log('num information is Not Found!');
+            throw new NotFoundException();
+        }
+        return {
+            'num': post.num,
+            'tltie': post.title,
+            'content': post.content
+        };
+    };
+
+    async create(data: CommentList) {
+        return await this.CommentListRepository.save(data);
+    }
 
     async check(data: CommentList) {
         if (!data.num) {
@@ -50,18 +67,18 @@ export class CommentlistService {
         );
         return {
             'status': 200
-        }
-    }
+        };
+    };
 
     async remove(num: number) {
         const x = await this.CommentListRepository.findOne(num);
         if (!x) {
             this.logger.log('num is Not Found!');
             throw new BadRequestException();
-        }
+        };
         await this.CommentListRepository.delete(num);
         return {
             'status': 200
-        }
-    }
+        };
+    };
 }

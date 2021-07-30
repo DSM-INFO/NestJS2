@@ -1,6 +1,7 @@
+import { JwtAuthGuard } from './../middleware/jwt.guard';
 import { CommentList } from './../entities/commentlist.entity';
 import { CommentlistService } from './commentlist.service';
-import { Body, Controller, Delete, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
 @Controller('list')
 export class CommentlistController {
@@ -8,9 +9,14 @@ export class CommentlistController {
         private readonly CommentlistService: CommentlistService
     ) { }
 
-    @Post()
-    async check(@Body() data: CommentList) {
-        return await this.CommentlistService.check(data);
+    @Get(':num')
+    async getlist(@Param('num') num: number) {
+        return await this.CommentlistService.getlist(num);
+    }
+
+    @Post('create')
+    async create(@Body() data: CommentList) {
+        return await this.CommentlistService.create(data);
     }
 
     @Patch(':num')

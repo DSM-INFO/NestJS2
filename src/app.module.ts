@@ -1,10 +1,11 @@
+import { JwtStrategy } from './middleware/jwt.strategy';
+import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from './admin/admin.module';
 import { UserModule } from './user/user.module';
 import { CommentlistModule } from './commentlist/commentlist.module';
-import { StatuslistModule } from './statuslist/statuslist.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
@@ -23,9 +24,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AdminModule,
     UserModule,
     CommentlistModule,
-    StatuslistModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule { }

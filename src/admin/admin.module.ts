@@ -1,3 +1,4 @@
+import { User } from './../entities/user.entity';
 import { Admin } from './../entities/admin.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
@@ -9,7 +10,7 @@ import { jwtConstants } from './constants';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Admin]),
+    TypeOrmModule.forFeature([Admin, User]),
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '10m' },
