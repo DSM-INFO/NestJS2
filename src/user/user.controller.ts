@@ -1,3 +1,4 @@
+import { JwtAuthGuard } from './../middleware/jwt.guard';
 import { User } from './../entities/user.entity';
 import { UserService } from './user.service';
 import { Body, Controller, Patch, Post, Param, UseGuards, Request } from '@nestjs/common';
@@ -18,6 +19,7 @@ export class UserController {
         return this.UserService.login(data);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch('update/:id')
     async updateUser(@Param('id') id: string, @Body() data: User) {
         return await this.UserService.updateUser(id, data);

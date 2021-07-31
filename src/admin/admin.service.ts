@@ -53,6 +53,7 @@ export class AdminService {
     };
 
     async updateUser(id: string, data: User) {
+        
         const user = await this.UserRepository.findOne({ where: { id } });
         if (!user) {
             this.logger.log('id is Not Found!');

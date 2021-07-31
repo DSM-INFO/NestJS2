@@ -15,16 +15,19 @@ export class CommentlistController {
         return await this.CommentlistService.getlist(num);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post('create')
     async create(@Body() data: CommentList) {
         return await this.CommentlistService.create(data);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':num')
     async update(@Param('num') num: number, @Body() data: CommentList) {
         return await this.CommentlistService.update(num, data.title, data.content);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete(':num')
     async remove(@Param('num') num: number) {
         return await this.CommentlistService.remove(num);
