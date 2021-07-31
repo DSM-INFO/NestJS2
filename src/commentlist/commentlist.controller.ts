@@ -1,5 +1,5 @@
 import { JwtAuthGuard } from './../middleware/jwt.guard';
-import { CommentList } from './../entities/commentlist.entity';
+import { CommentList } from '../entities/Commentlist.entity';
 import { CommentlistService } from './commentlist.service';
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 
