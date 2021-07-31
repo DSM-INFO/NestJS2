@@ -11,6 +11,9 @@ export class CommentList {
     @Column()
     content: string;
 
+    @Column()
+    writer: string;
+
     @CreateDateColumn()
     date: Date;
 }

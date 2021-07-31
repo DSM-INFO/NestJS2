@@ -1,41 +1,47 @@
+import { JwtService } from '@nestjs/jwt';
 import { CommentList } from '../entities/commentlist.entity';
-import { Injectable, Logger, BadRequestException, NotFoundException, UnauthorizedException, Post } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { timeStamp } from 'console';
 
 @Injectable()
 export class CommentlistService {
     constructor(
         @InjectRepository(CommentList) private CommentListRepository: Repository<CommentList>,
+        private jwtService: JwtService,
     ) { }
     private logger = new Logger();
 
     //
-    async getlist(num: number) {
-        const post = await this.CommentListRepository.findOne({ where: { num } });
-        if (!post) {
-            this.logger.log('num information is Not Found!');
+    async getlist() {
+        const list = await this.CommentListRepository.find();
+        if (!list) {
             throw new NotFoundException();
         }
-        return {
-            'num': post.num,
-            'tltie': post.title,
-            'content': post.content
-        };
+        return list;
     };
 
-    async create(data: CommentList) {
-        return await this.CommentListRepository.save(data);
+    async create(req) {
+        if (!req.title || !req.content || !req.num) {
+            throw new BadRequestException();
+        }
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
+        return await this.CommentListRepository.save({
+            title: req.body.title,
+            content: req.body.content,
+            writer: writer.name
+        });
     }
 
-    async check(data: CommentList) {
+    //보류
+    async check(data, req) {
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
         if (!data.num) {
-            this.logger.log('num is Not Found');
             throw new NotFoundException();
         }
         if (!data.title || !data.content) {
-            this.logger.log('title & content is Not Found!');
             throw new BadRequestException();
         }
         await this.CommentListRepository.save({
@@ -49,21 +55,26 @@ export class CommentlistService {
         };
     };
 
-    async update(num, title, content) {
-        if (!num) {
-            this.logger.log('num is Not Found!');
-        }
-        if (!title || !content) {
-            this.logger.log('title & content is Not Found!');
+    async update(req) {
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
+        if (!req.num || !req.title || !req.content) {
             throw new BadRequestException();
+        }
+        const post = await this.CommentListRepository.findOne(req.num);
+        if (post === undefined) {
+            throw new NotFoundException();
+        }
+        if (writer.name !== post.writer || !writer.isAdmin) {
+            throw new UnauthorizedException();
         }
         this.CommentListRepository.update(
             {
-                num: num
+                num: req.num
             },
             {
-                title: title,
-                content: content
+                title: req.title,
+                content: req.content
             },
         );
         return {
@@ -71,15 +82,26 @@ export class CommentlistService {
         };
     };
 
-    async remove(num: number) {
-        const x = await this.CommentListRepository.findOne(num);
-        if (!x) {
-            this.logger.log('num is Not Found!');
-            throw new BadRequestException();
-        };
-        await this.CommentListRepository.delete(num);
+    async remove(req) {
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
+        const post = await this.CommentListRepository.findOne(req.num);
+        if (post === undefined) {
+            throw new NotFoundException();
+        }
+        if (writer.name !== post.writer || !writer.isAdmin) {
+            throw new UnauthorizedException();
+        }
+        await this.CommentListRepository.delete(req.num);
         return {
             'status': 200
         };
     };
+
+    //복호화
+    private async bearertoken(bearerToken): Promise<any> {
+        const tokenString = bearerToken.split(' ')[1];
+        const writer = await this.jwtService.verifyAsync(tokenString);
+        return writer;
+    }
 }
