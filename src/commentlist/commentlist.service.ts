@@ -1,4 +1,4 @@
-import { CommentList } from '../entities/Commentlist.entity';
+import { CommentList } from '../entities/commentlist.entity';
 import { Injectable, Logger, BadRequestException, NotFoundException, UnauthorizedException, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
