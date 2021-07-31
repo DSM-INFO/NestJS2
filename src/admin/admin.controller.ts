@@ -17,10 +17,8 @@ export class AdminController {
     @Post()
     async create(@Body() data) {
         return await this.AdminService.create(data);
-    }
-    */
+    }*/
 
-    
     @Patch('update/:id')
     async updateUser(@Param('id') id: string, @Body() data: User) {
         return await this.AdminService.updateUser(id, data);

@@ -20,10 +20,11 @@ export class AdminService {
         const hashedpassword = await hash(data.password, 12);
         return await this.AdminRepository.save({
             ID: data.ID,
-            password: hashedpassword
+            password: hashedpassword,
+            isAdmin: data.isAdmin
+
         });
-    }
-    */
+    }*/
 
     async login(data) {
         if (!data.ID || !data.password) {

@@ -9,6 +9,7 @@ export class CommentlistController {
         private readonly CommentlistService: CommentlistService
     ) { }
 
+    @UseGuards(JwtAuthGuard)
     @Get(':num')
     async getlist(@Param('num') num: number) {
         return await this.CommentlistService.getlist(num);

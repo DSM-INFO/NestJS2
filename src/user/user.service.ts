@@ -48,10 +48,12 @@ export class UserService {
             this.logger.log('password is Wrong!');
             throw new ForbiddenException();
         }
+        console.log(data);
         const jwt = await this.JwtService.signAsync({
-            id: data.id,
-            name: data.name,
-            grade: data.grade
+            uid: user.uid,
+            id: user.id,
+            name: user.name,
+            grade: user.grade
         });
         return {
             "status": 200,

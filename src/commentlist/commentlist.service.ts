@@ -11,8 +11,9 @@ export class CommentlistService {
     ) { }
     private logger = new Logger();
 
+    //
     async getlist(num: number) {
-        const post = await this.CommentListRepository.findOne(num);
+        const post = await this.CommentListRepository.findOne({ where: { num } });
         if (!post) {
             this.logger.log('num information is Not Found!');
             throw new NotFoundException();
