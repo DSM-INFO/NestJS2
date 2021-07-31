@@ -1,7 +1,6 @@
 import { JwtAuthGuard } from './../middleware/jwt.guard';
-import { CommentList } from '../entities/commentlist.entity';
 import { CommentlistService } from './commentlist.service';
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Patch, Post, Req, UseGuards } from '@nestjs/common';
 
 @Controller('list')
 export class CommentlistController {
@@ -22,14 +21,14 @@ export class CommentlistController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('')
+    @Patch('update')
     async update(@Req() req) {
         return await this.CommentlistService.update(req);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('')
+    @Delete('delete')
     async remove(@Req() req) {
-        return await this.CommentlistService.remove(req);
+        return await this.CommentlistService.delete(req);
     }
 }

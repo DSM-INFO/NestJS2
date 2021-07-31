@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeor
 
 @Entity()
 export class Admin {
-    @PrimaryGeneratedColumn('uuid')
+    @PrimaryGeneratedColumn()
     num: number;
 
     @Column({ unique: true })
@@ -10,6 +10,9 @@ export class Admin {
 
     @Column()
     password: string;
+
+    @Column()
+    name: string;
 
     @Column({ default: true })
     isAdmin: boolean;

@@ -15,12 +15,10 @@ export class UserService {
 
     async signup(data: User) {
         if (!data.id || !data.name || !data.grade || !data.password) {
-            this.logger.log('id && name && grade && password is Not Found!');
             throw new UnauthorizedException();
         }
         const user = await this.UserRepository.findOne({ id: data.id });
         if (user) {
-            this.logger.log('Users who already exist')
             throw new BadRequestException();
         }
         const hashedpassword = await hash(data.password, 12);
@@ -37,12 +35,10 @@ export class UserService {
 
     async login(data) {
         if (!data.id || !data.password) {
-            this.logger.log('id && password is Not Found!');
             throw new UnauthorizedException()
         }
         const user = await this.UserRepository.findOne({ id: data.id });
         if (!user) {
-            this.logger.log('User is Not Found!');
             throw new NotFoundException();
         }
         await this.verifyPassword(data.password, user.password);
@@ -59,7 +55,54 @@ export class UserService {
         };
     };
 
-    //ligin
+    async updateUser(req) {
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
+        const post = await this.UserRepository.findOne(req.body.id);
+        if (!req.body.id || !req.body.name || !req.body.grade) {
+            throw new BadRequestException();
+        }
+        if (writer.id !== post.id || !writer.isAdmin) {
+            throw new UnauthorizedException();
+        }
+        if (post === undefined) {
+            throw new NotFoundException();
+        }
+        await this.UserRepository.update(
+            {
+                id: req.body.id
+            },
+            {
+                id: req.body.id,
+                name: req.body.name,
+                grade: req.body.grade
+            },
+        );
+        return {
+            'status': 200
+        };
+    };
+
+    async deleteUser(req) {
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
+        const post = await this.UserRepository.findOne(req.body.id);
+        if (!req.body.id || !req.body.name || !req.body.grade) {
+            throw new BadRequestException();
+        }
+        if (writer.id !== post.id || !writer.isAdmin) {
+            throw new UnauthorizedException();
+        }
+        if (post === undefined) {
+            throw new NotFoundException();
+        }
+        await this.UserRepository.delete(req.id);
+        return {
+            'status': 200
+        }
+    }
+
+    //ligin(password입증)
     private async verifyPassword(
         plainPassword: string,
         hashedpassword: string,
@@ -71,29 +114,12 @@ export class UserService {
         }
     }
 
-    async updateUser(id: string, data: User) {
-        const user = await this.UserRepository.findOne({ where: { id } });
-        if (!user) {
-            this.logger.log('id is Not Found!');
-            throw new BadRequestException();
-        }
-        if (!data.id || !data.name || !data.grade) {
-            this.logger.log('id & name & grade is Not Found!');
-        }
-        await this.UserRepository.update(
-            {
-                id: id
-            },
-            {
-                id: data.id,
-                name: data.name,
-                grade: data.grade
-            },
-        );
-        return {
-            'status': 200
-        };
-    };
+    //복호화
+    private async bearertoken(bearerToken): Promise<any> {
+        const tokenString = bearerToken.split(' ')[1];
+        const writer = await this.JwtService.verifyAsync(tokenString);
+        return writer;
+    }
 
     //보류
     /*

@@ -1,7 +1,7 @@
 import { JwtAuthGuard } from './../middleware/jwt.guard';
 import { User } from './../entities/user.entity';
 import { UserService } from './user.service';
-import { Body, Controller, Patch, Post, Param, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Patch, Post, UseGuards, Req, Delete } from '@nestjs/common';
 
 @Controller('user')
 export class UserController {
@@ -20,9 +20,15 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('update/:id')
-    async updateUser(@Param('id') id: string, @Body() data: User) {
-        return await this.UserService.updateUser(id, data);
+    @Patch('update')
+    async updateUser(@Req() req) {
+        return await this.UserService.updateUser(req);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete('delete')
+    async DeleteUser(@Req() req) {
+        return await this.UserService.deleteUser(req);
     }
 
     /*
