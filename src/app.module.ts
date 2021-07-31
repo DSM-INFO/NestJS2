@@ -1,5 +1,4 @@
 import { JwtStrategy } from './middleware/jwt.strategy';
-import { JwtModule } from '@nestjs/jwt';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,7 +17,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       password: 'eogus2513',
       database: 'test',
       autoLoadEntities: true,
-      synchronize: false,
+      synchronize: true,
       logging: true
     }),
     AdminModule,
