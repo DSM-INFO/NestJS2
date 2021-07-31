@@ -55,6 +55,25 @@ export class UserService {
         };
     };
 
+    async check(req) {
+        const bearerToken = req.headers.authorization;
+        const writer = await this.bearertoken(bearerToken);
+        if (!req.params.status) {
+            throw new BadRequestException();
+        }
+        await this.UserRepository.update(
+            {
+                uid: writer.uid
+            },
+            {
+                status: req.params.status
+            }
+        );
+        return {
+            'status': 200
+        }
+    }
+
     async updateUser(req) {
         const bearerToken = req.headers.authorization;
         const writer = await this.bearertoken(bearerToken);
@@ -86,18 +105,20 @@ export class UserService {
     async deleteUser(req) {
         const bearerToken = req.headers.authorization;
         const writer = await this.bearertoken(bearerToken);
-        const user = await this.UserRepository.findOne({id: req.params.id});
+        const user = await this.UserRepository.findOne({ id: req.params.id });
         if (writer.id !== user.id && !writer.isAdmin) {
             throw new UnauthorizedException();
         }
         if (user === undefined) {
             throw new NotFoundException();
         }
-        await this.UserRepository.delete({id: req.params.id});
+        await this.UserRepository.delete({ id: req.params.id });
         return {
             'status': 200
         }
     }
+
+    as
 
     //ligin(password입증)
     private async verifyPassword(

@@ -20,6 +20,12 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Patch('check/:status')
+    async check(@Req() req) {
+        return await this.UserService.check(req);
+    }
+
+    @UseGuards(JwtAuthGuard)
     @Patch('update/:id')
     async updateUser(@Req() req) {
         return await this.UserService.updateUser(req);
