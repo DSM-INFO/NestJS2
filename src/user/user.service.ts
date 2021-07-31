@@ -1,5 +1,5 @@
 import { User } from './../entities/user.entity';
-import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, Logger, NotFoundException, UnauthorizedException, Param } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { compare, hash } from 'bcrypt';
@@ -58,19 +58,19 @@ export class UserService {
     async updateUser(req) {
         const bearerToken = req.headers.authorization;
         const writer = await this.bearertoken(bearerToken);
-        const post = await this.UserRepository.findOne(req.body.id);
+        const user = await this.UserRepository.findOne({ id: req.params.id });
         if (!req.body.id || !req.body.name || !req.body.grade) {
             throw new BadRequestException();
         }
-        if (writer.id !== post.id || !writer.isAdmin) {
+        if (writer.id !== req.params.id && !writer.isAdmin) {
             throw new UnauthorizedException();
         }
-        if (post === undefined) {
+        if (user === undefined) {
             throw new NotFoundException();
         }
         await this.UserRepository.update(
             {
-                id: req.body.id
+                id: req.params.id
             },
             {
                 id: req.body.id,
@@ -86,17 +86,14 @@ export class UserService {
     async deleteUser(req) {
         const bearerToken = req.headers.authorization;
         const writer = await this.bearertoken(bearerToken);
-        const post = await this.UserRepository.findOne(req.body.id);
-        if (!req.body.id || !req.body.name || !req.body.grade) {
-            throw new BadRequestException();
-        }
-        if (writer.id !== post.id || !writer.isAdmin) {
+        const user = await this.UserRepository.findOne({id: req.params.id});
+        if (writer.id !== user.id && !writer.isAdmin) {
             throw new UnauthorizedException();
         }
-        if (post === undefined) {
+        if (user === undefined) {
             throw new NotFoundException();
         }
-        await this.UserRepository.delete(req.id);
+        await this.UserRepository.delete({id: req.params.id});
         return {
             'status': 200
         }

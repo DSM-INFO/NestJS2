@@ -20,13 +20,13 @@ export class UserController {
     }
 
     @UseGuards(JwtAuthGuard)
-    @Patch('update')
+    @Patch('update/:id')
     async updateUser(@Req() req) {
         return await this.UserService.updateUser(req);
     }
 
     @UseGuards(JwtAuthGuard)
-    @Delete('delete')
+    @Delete('delete/:id')
     async DeleteUser(@Req() req) {
         return await this.UserService.deleteUser(req);
     }
