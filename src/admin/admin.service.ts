@@ -55,7 +55,7 @@ export class AdminService {
     ): Promise<any> {
         const isPasswordMatch = await compare(plainPassword, hashedpassword);
         if (!isPasswordMatch) {
-            this.logger.log('Passwords do not match');
+            this.logger.log('Password do not match');
             throw new ForbiddenException();
         }
     }
