@@ -47,7 +47,6 @@ export class UserService {
         }
         await this.verifyPassword(data.password, user.password);
 
-        console.log(data);
         const jwt = await this.JwtService.signAsync({
             uid: user.uid,
             id: user.id,

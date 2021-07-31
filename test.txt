@@ -1,4 +1,4 @@
 admin 생성되면 admin test하기
 admin만 접속 가능하게 만들기
 check만들기
-User 로그인에서 password를 공백으로 두면 로그인성공이 된다.
+User 수정할 때 공백처리하기
