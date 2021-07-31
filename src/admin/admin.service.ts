@@ -32,15 +32,12 @@ export class AdminService {
             throw new UnauthorizedException()
         }
         const user = await this.AdminRepository.findOne({ ID: data.ID });
-        console.log(user);
         if (!user) {
             this.logger.log('Admin is Not Found!');
             throw new NotFoundException();
         }
-        if (!compare(data.password, user.password)) {
-            this.logger.log('password is Wrong!');
-            throw new ForbiddenException();
-        }
+        await this.verifyPassword(data.password, user.password);
+
         const jwt = await this.JwtService.signAsync({
             num: user.num,
             id: user.ID,
@@ -52,8 +49,19 @@ export class AdminService {
         };
     };
 
+    private async verifyPassword(
+        plainPassword: string,
+        hashedpassword: string,
+    ): Promise<any> {
+        const isPasswordMatch = await compare(plainPassword, hashedpassword);
+        if (!isPasswordMatch) {
+            this.logger.log('Passwords do not match');
+            throw new ForbiddenException();
+        }
+    }
+
     async updateUser(id: string, data: User) {
-        
+
         const user = await this.UserRepository.findOne({ where: { id } });
         if (!user) {
             this.logger.log('id is Not Found!');

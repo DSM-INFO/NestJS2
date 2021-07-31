@@ -20,6 +20,7 @@ export class UserService {
         }
         const user = await this.UserRepository.findOne({ id: data.id });
         if (user) {
+            this.logger.log('Users who already exist')
             throw new BadRequestException();
         }
         const hashedpassword = await hash(data.password, 12);
@@ -41,13 +42,11 @@ export class UserService {
         }
         const user = await this.UserRepository.findOne({ id: data.id });
         if (!user) {
-            this.logger.log('user is Not Found!');
+            this.logger.log('User is Not Found!');
             throw new NotFoundException();
         }
-        if (!compare(data.password, user.password)) {
-            this.logger.log('password is Wrong!');
-            throw new ForbiddenException();
-        }
+        await this.verifyPassword(data.password, user.password);
+
         console.log(data);
         const jwt = await this.JwtService.signAsync({
             uid: user.uid,
@@ -60,6 +59,18 @@ export class UserService {
             "access_token": jwt
         };
     };
+
+    //ligin
+    private async verifyPassword(
+        plainPassword: string,
+        hashedpassword: string,
+    ): Promise<any> {
+        const isPasswordMatch = await compare(plainPassword, hashedpassword);
+        if (!isPasswordMatch) {
+            this.logger.log('Passwords do not match');
+            throw new ForbiddenException();
+        }
+    }
 
     async updateUser(id: string, data: User) {
         const user = await this.UserRepository.findOne({ where: { id } });
