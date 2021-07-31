@@ -6,6 +6,8 @@ import { AdminModule } from './admin/admin.module';
 import { UserModule } from './user/user.module';
 import { CommentlistModule } from './commentlist/commentlist.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { JwtModule } from '@nestjs/jwt';
+import { jwtConstants } from './middleware/constants';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     AdminModule,
     UserModule,
     CommentlistModule,
+    JwtModule.register({
+      secret: jwtConstants.secret,
+      signOptions: { expiresIn: '5m' },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

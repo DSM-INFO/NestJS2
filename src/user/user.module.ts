@@ -1,11 +1,12 @@
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 import { User } from './../entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
+import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'src/middleware/constants';
+import { JwtStrategy } from 'src/middleware/jwt.strategy';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { jwtConstants } from 'src/middleware/constants';
     }),
   ],
   controllers: [UserController],
-  providers: [UserService],
+  providers: [UserService, JwtStrategy],
   exports: [UserService]
 })
 export class UserModule { }

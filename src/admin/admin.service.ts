@@ -42,9 +42,9 @@ export class AdminService {
             throw new ForbiddenException();
         }
         const jwt = await this.JwtService.signAsync({
-            id: data.id,
-            name: data.name,
-            grade: data.grade
+            num: user.num,
+            id: user.ID,
+            isAdmin: user.isAdmin
         });
         return {
             "status": 200,
